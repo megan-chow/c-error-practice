@@ -11,8 +11,6 @@ registerLesson({
   number: 2,
   title: "Control Structures",
   questions: [
-    // ---- if / else ----
-
     {
       type: "logic",
       code: String.raw`#include <stdio.h>
@@ -535,6 +533,57 @@ int main(void) {
         case 3:
             printf("Three\n");
             break;
+    }
+
+    return 0;
+}`
+    },
+
+    {
+      type: "compiler", line: 6,
+      code: String.raw`#include <stdio.h>
+
+int main(void) {
+    int x = 10;
+
+    if (x > 5 & & x < 20) {
+        printf("Valid\n");
+    }
+
+    return 0;
+}`
+    },
+
+    {
+      type: "compiler", line: 10,
+      code: String.raw`#include <stdio.h>
+
+int main(void) {
+    int choice;
+    scanf("%d", &choice);
+
+    switch (choice) {
+        case 1:
+            printf("One\n");
+            break
+        case 2:
+            printf("Two\n");
+            break;
+    }
+
+    return 0;
+}`
+    },
+
+    {
+      type: "logic",
+      code: String.raw`#include <stdio.h>
+
+int main(void) {
+    size_t i;
+
+    for (i = 0; i < 5; i++); {
+        printf("%d\n", i);
     }
 
     return 0;

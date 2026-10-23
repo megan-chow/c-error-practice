@@ -757,6 +757,106 @@ int main(void)
 
     return 0;
 }`
+    },
+
+    {
+      type: "none",
+      code: String.raw`#include <stdio.h>
+
+int main(void)
+{
+    size_t i = 0;
+    for (; i < 5; )
+    {
+        printf("%d ", i++);
+    }
+
+    printf("%d\n", i);
+
+    return 0;
+}`
+    },
+
+    {
+      type: "logic",
+      code: String.raw`#include <stdio.h>
+
+int main(void) {
+    int choice;
+    scanf("%d", &choice);
+
+    switch (choice) {
+        case 1:
+            printf("One\n");
+        case 2:
+            printf("Two\n");
+            break;
+        default:
+            printf("Other\n");
+    }
+
+    return 0;
+}`
+    },
+
+    {
+      type: "logic",
+      code: String.raw`#include <stdio.h>
+
+int main(void)
+{
+    int n1 = 3, n2 = 1;
+
+    int average = n1 + n2 / 2;
+
+    printf("%d", average);
+
+    return 0;
+}`
+    },
+
+    {
+      type: "compiler", line: 4,
+      feedback: "function used before definition",
+      code: String.raw`#include <stdio.h>
+
+int main(void) {
+    printf("%d\n", factorial(5));
+    return 0;
+}
+
+int factorial(int n) {
+    if (n == 0) {
+        return 1;
+    }
+
+    return n * factorial(n - 1);
+}`
+    },
+
+    {
+      type: "none",
+      code: String.raw`#include <stdio.h>
+
+void function1(void)
+{
+    int number = 10;
+    printf("%d\n", number);
+}
+
+void function2(void)
+{
+    int number = 20;
+    printf("%d\n", number);
+}
+
+int main(void)
+{
+    function1();
+    function2();
+
+    return 0;
+}`
     }
 
   ]

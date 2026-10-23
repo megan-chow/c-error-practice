@@ -695,6 +695,184 @@ int main(void) {
 
     return 0;
 }`
+    },
+
+    {
+      type: "runtime",
+      feedback: "in the for loop, when i is 5, accessing data[5], which is NOT in data[] array",
+      code: String.raw`#include <stdio.h>
+
+/* linear search */
+int main(void) {
+    int data[] = {10, 20, 30, 40, 50};
+    int key = 60;
+    size_t found = (size_t)-1;
+
+    for (size_t i = 0; i <= 5; i++) {
+        if (data[i] == key) {
+            found = i;
+            break;
+        }
+    }
+
+    printf("%d\n", (int)found);
+
+    return 0;
+}`
+    },
+
+    {
+      type: "logic",
+      feedback: "Logic error — assignment is used instead of comparison.\nFix: numbers[i] == target",
+      code: String.raw`#include <stdio.h>
+
+/* Expected to find a value from an array*/
+int main(void) {
+    int numbers[] = {4, 8, 12, 16};
+    int target = 12;
+    int found = 0;
+
+    for (int i = 0; i < 4; i++) {
+        if (numbers[i] = target) {
+            found = 1;
+        }
+    }
+
+    printf("%d\n", found);
+    return 0;
+}`
+    },
+
+    {
+      type: "compiler", line: 6,
+      feedback: "missing quotations on Line 6;\nZ will be seen as a variable",
+      code: String.raw`#include <stdio.h>
+
+int main(void) {
+    char letters[3] = {'A', 'B', 'C'};
+
+    letters[1] = Z;
+
+    printf("%c\n", letters[1]);
+
+    return 0;
+}`
+    },
+
+    {
+      type: "logic",
+      feedback: "The loop repeatedly modifies numbers[0] instead of modifying each array element.",
+      code: String.raw`#include <stdio.h>
+/* Expected to double all values in the array.*/
+int main(void) {
+    int numbers[5] = {1, 2, 3, 4, 5};
+
+    for (int i = 0; i < 5; i++) {
+        numbers[0] = numbers[i] * 2;
+    }
+
+    for (int i = 0; i < 5; i++) {
+        printf("%d ", numbers[i]);
+    }
+
+    return 0;
+}`
+    },
+
+    {
+      type: "logic",
+      feedback: "logic error\nExplanation: word[0] is 'H', not '\\0', so the loop never executes. The program incorrectly prints 0.",
+      code: String.raw`#include <stdio.h>
+
+int main(void) {
+    char word[] = "Hello";
+    size_t count = 0;
+
+    while (word[count] == '\0') {
+        count++;
+    }
+
+    printf("%d\n", count);
+
+    return 0;
+}`
+    },
+
+    {
+      type: "none",
+      code: String.raw`#include <stdio.h>
+
+int main(void) {
+
+    int numbers[] = {10, 20, 30, 40, 50};
+
+    printf("%d\n", numbers[2]);
+
+    return 0;
+}`
+    },
+
+    {
+      type: "logic",
+      feedback: "Wrong way to swap, unexpected result, no crash",
+      code: String.raw`#include <stdio.h>
+/* Expect: sorting the array in ascending order.*/
+int main(void) {
+    int temp, data[] = {5, 2, 8, 1, 4};
+    size_t size = 5;
+
+    for (size_t pass = 0; pass < size - 1; pass++) {
+        for (size_t i = 0; i < size - 1; i++) {
+            if (data[i] > data[i + 1]) {
+                data[i] = data[i + 1];
+                data[i + 1] = data[i];
+            }
+        }
+    }
+
+    for (size_t i = 0; i < size; i++) {
+        printf("%d ", data[i]);
+    }
+
+    return 0;
+}`
+    },
+
+    {
+      type: "runtime",
+      feedback: "run-time error (undefined behaviour)\nthe 3rd row should have row index 2, NOT 3",
+      code: String.raw`#include <stdio.h>
+
+/* To set all elements in the third row to 0.*/
+int main(void) {
+    int data[3][4] = {
+        {1, 2, 3, 4},
+        {5, 6, 7, 8},
+        {9, 10, 11, 12}
+    };
+
+    for (size_t column = 0; column < 4; column++) {
+        data[3][column] = 0;
+    }
+
+    return 0;
+}`
+    },
+
+    {
+      type: "none",
+      code: String.raw`#include <stdio.h>
+
+int main(void) {
+    size_t i = 0;
+
+    for (; i < 5; ) {
+        printf("%d\n", i);
+        i++;
+    }
+
+    return 0;
+}`
     }
 
   ]

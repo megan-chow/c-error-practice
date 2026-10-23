@@ -936,6 +936,96 @@ int main(void) {
     printf("%d %d\n", *x, *y);
     return 0;
 }`
+    },
+
+    {
+      type: "compiler", line: 11,
+      feedback: "Compile error on Line 11\nfunction's return-value-type mismatches.\nThe assignment on Line 11 is not legit syntax (cannot assign)",
+      code: String.raw`#include <stdio.h>
+ 
+/* Expect to print 5 */
+double add(int a, int b) {
+    return a + b;
+}
+ 
+int main(void) {
+    int (*p)(int, int);
+ 
+    p = add;
+ 
+    printf("%d\n", p(2, 3));
+ 
+    return 0;
+}`
+    },
+ 
+    {
+      type: "none",
+      code: String.raw`#include <stdio.h>
+ 
+/* Expect to print 20 */
+int main(void) {
+    int a = 10, b = 20, c = 30;
+ 
+    int *p[3] = {&a, &b, &c};
+    int **q = p + 1;
+ 
+    printf("%d\n", **q);
+ 
+    return 0;
+}`
+    },
+ 
+    {
+      type: "compiler", line: 6,
+      feedback: "error: lvalue required as left operand of assignment\n&p is not a variable",
+      code: String.raw`#include <stdio.h>
+ 
+int main(void) {
+    int x = 10;
+    int *p;
+    &p = x;
+ 
+    printf("%d\n", *p);
+ 
+    return 0;
+}`
+    },
+ 
+    {
+      type: "none",
+      feedback: "*p=*q*2 is same as (*p) = (*q) * 2 which is equivalent to x = y *2\nSo x will become 20",
+      code: String.raw`#include <stdio.h>
+ 
+/* Expect to print 20*/
+int main(void) {
+    int x = 20, y = 10;
+ 
+    int *p = &x, *q = &y;
+ 
+    *p=*q*2;
+ 
+    printf("%d\n", x);
+ 
+    return 0;
+}`
+    },
+ 
+    {
+      type: "none",
+      feedback: "p still points to x, so the output is 12.",
+      code: String.raw`#include <stdio.h>
+ 
+int main(void) {
+    int x = 5;
+    int *p = &x;
+ 
+    x = 12;
+ 
+    printf("%d\n", *p);
+ 
+    return 0;
+}`
     }
 
   ]

@@ -401,6 +401,88 @@ int main(void) {
     }
     return 0;
 }`
+    },
+
+    {
+      type: "none",
+      feedback: "int* const p, cannot change value in p (address). But it's Okay to use p to change its target",
+      code: String.raw`#include <stdio.h>
+ 
+/* Expect to print 20*/
+void half(int* const p) {
+    *p /= 2;
+}
+ 
+int main(void) {
+    int n = 40;
+    half(&n);
+    printf("%d\n", n);
+    return 0;
+}`
+    },
+ 
+    {
+      type: "compiler", line: 5,
+      feedback: "Wrong way to define a char pointer",
+      code: String.raw`#include <stdio.h>
+ 
+/* Expect to print Hello */
+int main(void) {
+    char word* = "Hello";
+ 
+    printf("%s\n", word);
+ 
+    return 0;
+}`
+    },
+ 
+    {
+      type: "logic",
+      feedback: "Output: Programming\nTo print Prog, should go with printf(\"%.4s\\n\", word);",
+      code: String.raw`#include <stdio.h>
+ 
+/* Expect to print Prog */
+int main(void) {
+    char word[] = "Programming";
+ 
+    printf("%4s\n", word);
+ 
+    return 0;
+}`
+    },
+ 
+    {
+      type: "none",
+      code: String.raw`#include <stdio.h>
+ 
+/* Expect to print 5 */
+int add(int a, int b) {
+    return a + b;
+}
+ 
+int main(void) {
+    int (*p)(int, int);
+ 
+    p = add;
+ 
+    printf("%d\n", p(2, 3));
+ 
+    return 0;
+}`
+    },
+ 
+    {
+      type: "runtime",
+      feedback: "run-time error (undefined behaviour)",
+      code: String.raw`#include <stdio.h>
+ 
+int main(void) {
+    char ch;
+ 
+    scanf("%c", ch);
+ 
+    return 0;
+}`
     }
 
   ]

@@ -417,6 +417,20 @@ int main(void)
 
     return 0;
 }`
+    },
+    
+    {
+      type: "compiler", line: 7,
+      code: String.raw`#include <stdio.h>
+
+int main(void)
+{
+    int x = 11, y = 22;
+    if (x < y) {
+        println("%d", x);
+    }
+    return 0;
+}`
     }
 
   ]

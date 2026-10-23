@@ -720,6 +720,36 @@ void calculate(void)
 {
     int result = 100;
 }`
+    },
+
+    {
+      type: "logic",
+      feedback: "sqrt() returns a floating-point value, but assigning it to int discards the fractional part.",
+      code: String.raw`#include <stdio.h>
+#include <math.h>
+
+int main(void)
+{
+    int result = sqrt(20.0);
+
+    printf("%d\n", result);
+    return 0;
+}`
+    },
+
+    {
+      type: "compiler", line: 6,
+      feedback: "fmod() function requires two arguments.",
+      code: String.raw`#include <stdio.h>
+#include <math.h>
+
+int main(void)
+{
+    double result = fmod(10.5);
+
+    printf("%.2f\n", result);
+    return 0;
+}`
     }
 
   ]
