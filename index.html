@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>C Error Identification Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef1f5; --panel:#ffffff; --ink:#1b2430; --muted:#5b6675; --line:#d3d9e1;
+  --accent:#0f766e; --accent-ink:#ffffff; --good:#1a7f45; --good-bg:#e4f4ea;
+  --bad:#b42318; --bad-bg:#fbe8e6; --code-bg:#14191f; --code-ink:#e6edf3; --gutter:#6b7683;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f141a; --panel:#182029; --ink:#e6edf3; --muted:#9aa6b5; --line:#2b3643;
+    --accent:#2dd4bf; --accent-ink:#06211e; --good:#5fd38d; --good-bg:#14301f;
+    --bad:#ff8a80; --bad-bg:#3a1b19; --code-bg:#0b0f14; --code-ink:#e6edf3; --gutter:#6b7683;
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Atkinson Hyperlegible",system-ui,sans-serif;font-size:17px;line-height:1.5}
+main{max-width:760px;margin:0 auto;padding:28px 18px 64px}
+h1{font-size:1.9rem;margin:0 0 4px;letter-spacing:-.01em}
+h2{font-size:1.15rem;margin:0 0 10px}
+.sub{color:var(--muted);margin:0 0 24px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px;margin-bottom:18px}
+.hidden{display:none!important}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.primary{background:var(--accent);color:var(--accent-ink);border:0;border-radius:8px;padding:11px 20px;font-weight:700}
+.primary:disabled{opacity:.45;cursor:not-allowed}
+.ghost{background:none;border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:8px 14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.spread{justify-content:space-between}
+
+/* lesson picker */
+.lessons{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px;margin:12px 0 18px}
+.lesson{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--line);border-radius:8px;padding:10px 12px;cursor:pointer}
+.lesson:has(input:checked){border-color:var(--accent);background:color-mix(in srgb,var(--accent) 9%,transparent)}
+.lesson input{margin-top:5px;accent-color:var(--accent);width:18px;height:18px}
+.lesson b{display:block}
+.lesson small{color:var(--muted)}
+.opts{display:flex;gap:18px;align-items:center;margin-bottom:18px;flex-wrap:wrap}
+.opts label{display:flex;gap:8px;align-items:center}
+
+/* quiz */
+.meta{color:var(--muted);font-size:.95rem}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin:8px 0 16px}
+.bar i{display:block;height:100%;background:var(--accent);transition:width .25s}
+.tag{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:1px 10px;font-size:.85rem;color:var(--muted)}
+pre.code{background:var(--code-bg);color:var(--code-ink);border-radius:8px;padding:14px 0;margin:14px 0 18px;overflow-x:auto;font-family:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;font-size:.92rem;line-height:1.6;tab-size:4;font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0}
+pre.code .ln{display:block;padding:0 16px 0 0;white-space:pre}
+pre.code .ln span.n{display:inline-block;width:2.6em;text-align:right;margin-right:1.2em;color:var(--gutter);user-select:none}
+.choices{display:grid;gap:8px}
+.choice{text-align:left;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:11px 14px}
+.choice:hover:not(:disabled){border-color:var(--accent)}
+.choice small{display:block;color:var(--muted)}
+.choice.right{border-color:var(--good);background:var(--good-bg)}
+.choice.wrong{border-color:var(--bad);background:var(--bad-bg)}
+.choice:disabled{cursor:default}
+.feedback{margin-top:16px;padding:14px 16px;border-radius:8px;border-left:5px solid}
+.feedback.ok{background:var(--good-bg);border-color:var(--good)}
+.feedback.no{background:var(--bad-bg);border-color:var(--bad)}
+.feedback p{margin:4px 0 0}
+.linebox{margin-top:12px;padding:12px 14px;border:1px solid var(--accent);border-radius:8px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.linebox input{font:inherit;width:5.5em;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+pre.code .ln.err{background:rgba(255,99,90,.22)}
+.instructor{margin-top:10px;padding:12px 16px;border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:8px;background:var(--panel)}
+.instructor p{margin:4px 0 0;white-space:pre-line}
+pre.code .t-kw,pre.code .t-pp,pre.code .t-op{color:#e8924a}
+pre.code .t-hdr,pre.code .t-num,pre.code .t-esc{color:#7aaedb}
+pre.code .t-str{color:#b1cf74}
+pre.code .t-fn{color:#f07466}
+pre.code .t-cm{color:#8b98a5;font-style:italic}
+.score{font-size:2.4rem;font-weight:700;margin:6px 0}
+table{border-collapse:collapse;width:100%;margin:10px 0 18px}
+td,th{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <h1>C Error Identification Practice</h1>
+  <p class="sub">Read the code, then name the kind of error it contains.</p>
+
+  <!-- Setup -->
+  <section id="setup" class="panel">
+    <div class="row spread">
+      <h2>Choose lessons to practice</h2>
+      <div class="row">
+        <button class="ghost" id="allBtn" type="button">Select all</button>
+        <button class="ghost" id="noneBtn" type="button">Clear</button>
+      </div>
+    </div>
+    <div class="lessons" id="lessonList"></div>
+    <div class="opts">
+      <label><input type="checkbox" id="shuffle" checked> Shuffle questions</label>
+      <span class="meta" id="count"></span>
+    </div>
+    <button class="primary" id="startBtn" type="button">Start quiz</button>
+  </section>
+
+  <!-- Quiz -->
+  <section id="quiz" class="panel hidden" aria-live="polite">
+    <div class="row spread">
+      <span class="meta" id="progress"></span>
+      <span class="tag" id="lessonTag"></span>
+    </div>
+    <div class="bar"><i id="barFill" style="width:0"></i></div>
+    <h2 id="prompt">What kind of error is in this code?</h2>
+    <pre class="code" id="code" tabindex="0"></pre>
+    <div class="choices" id="choices"></div>
+    <div class="linebox hidden" id="lineBox">
+      <label for="lineInput">Which line has the error?</label>
+      <input type="number" id="lineInput" min="1" inputmode="numeric">
+      <button class="primary" id="lineSubmit" type="button">Check answer</button>
+    </div>
+    <div id="feedback"></div>
+    <div class="row spread" style="margin-top:16px">
+      <button class="ghost" id="quitBtn" type="button">End quiz</button>
+      <button class="primary hidden" id="nextBtn" type="button">Next</button>
+    </div>
+  </section>
+
+  <!-- Results -->
+  <section id="results" class="panel hidden">
+    <h2>Results</h2>
+    <div class="score" id="scoreText"></div>
+    <table id="breakdown"></table>
+    <div class="row">
+      <button class="primary" id="retryMissed" type="button">Retry missed</button>
+      <button class="ghost" id="againBtn" type="button">Choose lessons</button>
+    </div>
+  </section>
+</main>
+
+<script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
+
+// Lesson files to load. Add one line here per new lesson file in /lessons.
+// A combined lesson (e.g. 10 and 11) is just one file whose number is the string "10-11".
+const LESSON_FILES = [
+  "lessons/lesson-1.js",
+  "lessons/lesson-2.js",
+  "lessons/lesson-3.js",
+  "lessons/lesson-4.js",
+  "lessons/lesson-5-6.js",
+  "lessons/lesson-7-8.js",
+  "lessons/lesson-9.js"
+];
+
+// Error categories the user picks from
+const ERROR_TYPES = [
+  { id: "compiler", label: "Compiler error" },
+  { id: "runtime",  label: "Run-time error" },
+  { id: "logic",    label: "Logic error" },
+  { id: "none",     label: "No error" }
+];
+
+// Each lesson file calls this once (see lessons/lesson-1.js for the format).
+// Lesson numbers are stored as strings so "10-11" works like "2".
+const LESSONS = {};
+const QUESTIONS = [];
+function registerLesson(l){
+  const key = String(l.number);
+  LESSONS[key] = l.title;
+  (l.questions || []).forEach(s => QUESTIONS.push(Object.assign({ lesson: key }, s)));
+}
+const byLesson = (a, b) => parseInt(a, 10) - parseInt(b, 10);   // "10-11" sorts as 10
+const lessonName = n => (String(n).includes("-") ? "Lessons " : "Lesson ") + n;
+
+function loadScript(src){
+  return new Promise(resolve => {
+    const el = document.createElement("script");
+    el.src = src;
+    el.onload = () => resolve(null);
+    el.onerror = () => resolve(src);
+    document.head.appendChild(el);
+  });
+}
+
+/* ============================================================
+   APP LOGIC
+   ============================================================ */
+const $ = id => document.getElementById(id);
+const STORE_KEY = "c-error-spotter:lessons";
+let deck = [], idx = 0, answers = [], answered = false;
+
+function loadSaved(){
+  try { return JSON.parse(localStorage.getItem(STORE_KEY)) || null; } catch(e){ return null; }
+}
+function save(arr){
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(arr)); } catch(e){}
+}
+function show(sectionId){
+  ["setup","quiz","results"].forEach(s => $(s).classList.toggle("hidden", s !== sectionId));
+  window.scrollTo(0, 0);
+}
+function selectedLessons(){
+  return [...document.querySelectorAll("#lessonList input:checked")].map(i => i.value);
+}
+function shuffled(a){
+  const r = a.slice();
+  for (let i = r.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [r[i], r[j]] = [r[j], r[i]];
+  }
+  return r;
+}
+const typeById = id => ERROR_TYPES.find(t => t.id === id);
+
+function buildLessonList(){
+  const saved = loadSaved();
+  const box = $("lessonList");
+  Object.keys(LESSONS).sort(byLesson).forEach(n => {
+    const total = QUESTIONS.filter(s => s.lesson === n).length;
+    const label = document.createElement("label");
+    label.className = "lesson";
+    const checked = saved ? saved.map(String).includes(n) : true;
+    label.innerHTML = '<input type="checkbox" value="' + n + '"' + (checked ? " checked" : "") + '>' +
+      '<span><b>' + lessonName(n) + '</b>' + LESSONS[n] + '<br><small>' + total + (total === 1 ? " question" : " questions") + '</small></span>';
+    if (!total){ label.querySelector("input").disabled = true; label.querySelector("input").checked = false; }
+    box.appendChild(label);
+  });
+  box.addEventListener("change", updateCount);
+  updateCount();
+}
+function updateCount(){
+  const sel = selectedLessons();
+  const n = QUESTIONS.filter(s => sel.includes(s.lesson)).length;
+  $("count").textContent = n + (n === 1 ? " question" : " questions") + " selected";
+  $("startBtn").disabled = n === 0;
+  save(sel);
+}
+
+function startQuiz(pool){
+  deck = $("shuffle").checked ? shuffled(pool) : pool.slice();
+  idx = 0; answers = [];
+  show("quiz");
+  renderQuestion();
+}
+
+/* ---------- C syntax highlighting (colors follow a typical dark IDE theme) ---------- */
+const C_KW = new Set(("auto break case char const continue default do double else enum extern float for goto if inline int long " +
+  "register return short signed sizeof static struct switch typedef union unsigned void volatile while").split(" "));
+const C_FN = new Set(("printf scanf fprintf fscanf sprintf snprintf sscanf puts gets fgets fputs putchar getchar fopen fclose fread fwrite " +
+  "malloc calloc realloc free strlen strcpy strncpy strcmp strncmp strcat memcpy memset exit abs rand srand atoi").split(" "));
+const C_CONST = new Set(["NULL", "EOF", "true", "false"]);
+const RE_ESC = /\\./y;
+const RE_FMT = /%[-+ #0]*\d*(?:\.\d+)?(?:hh|h|ll|l|L|z)?[diouxXeEfgGcspn%]/y;
+
+function escHtml(s){ return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+function tok(cls, t){ return '<span class="t-' + cls + '">' + escHtml(t) + '</span>'; }
+
+function hlString(t){
+  let out = "", buf = "", i = 0, m;
+  const flush = () => { if (buf){ out += tok("str", buf); buf = ""; } };
+  while (i < t.length){
+    RE_ESC.lastIndex = i; RE_FMT.lastIndex = i;
+    if (t[i] === "\\" && (m = RE_ESC.exec(t))){ flush(); out += tok("esc", m[0]); i += m[0].length; }
+    else if (t[i] === "%" && t[0] === '"' && (m = RE_FMT.exec(t))){ flush(); out += tok("esc", m[0]); i += m[0].length; }
+    else { buf += t[i]; i++; }
+  }
+  flush();
+  return out;
+}
+
+// st carries state between lines (only block comments span lines)
+function highlightLine(line, st){
+  let out = "", i = 0, incl = false, m;
+  const n = line.length;
+  while (i < n){
+    if (st.block){
+      const e = line.indexOf("*/", i);
+      if (e < 0){ out += tok("cm", line.slice(i)); i = n; }
+      else { out += tok("cm", line.slice(i, e + 2)); i = e + 2; st.block = false; }
+      continue;
+    }
+    const c = line[i], rest = line.slice(i);
+    if (c === "/" && line[i + 1] === "*"){ st.block = true; out += tok("cm", "/*"); i += 2; continue; }
+    if (c === "/" && line[i + 1] === "/"){ out += tok("cm", rest); i = n; continue; }
+    if (c === "#" && !line.slice(0, i).trim() && (m = /^#\s*\w+/.exec(rest))){
+      out += tok("pp", m[0]); i += m[0].length; incl = /include/.test(m[0]); continue;
+    }
+    if (incl && c === "<" && (m = /^<[^>]*>/.exec(rest))){ out += tok("hdr", m[0]); i += m[0].length; continue; }
+    if (c === '"' || c === "'"){
+      let j = i + 1;
+      while (j < n && line[j] !== c){ if (line[j] === "\\") j++; j++; }
+      const t = line.slice(i, Math.min(j + 1, n));
+      out += hlString(t); i += t.length; continue;
+    }
+    if (/\d/.test(c) && !/\w/.test(line[i - 1] || "") &&
+        (m = /^(?:0[xX][0-9a-fA-F]+|\d+\.?\d*(?:[eE][+-]?\d+)?[fFuUlL]*)/.exec(rest))){
+      out += tok("num", m[0]); i += m[0].length; continue;
+    }
+    if ((m = /^[A-Za-z_]\w*/.exec(rest))){
+      const w = m[0];
+      out += C_KW.has(w) ? tok("kw", w) : C_FN.has(w) ? tok("fn", w) : C_CONST.has(w) ? tok("num", w) : escHtml(w);
+      i += w.length; continue;
+    }
+    if ((m = /^[+\-*\/%=<>!&|^~?:]+/.exec(rest))){ out += tok("op", m[0]); i += m[0].length; continue; }
+    out += escHtml(c); i++;
+  }
+  return out;
+}
+
+function renderQuestion(){
+  const q = deck[idx];
+  answered = false;
+  $("progress").textContent = "Question " + (idx + 1) + " of " + deck.length;
+  $("lessonTag").textContent = lessonName(q.lesson) + ": " + LESSONS[q.lesson];
+  $("barFill").style.width = (idx / deck.length * 100) + "%";
+  $("feedback").innerHTML = "";
+  $("nextBtn").classList.add("hidden");
+  $("lineBox").classList.add("hidden");
+  $("lineInput").value = "";
+  $("lineInput").disabled = false;
+  $("lineSubmit").disabled = false;
+
+  const code = $("code");
+  code.textContent = "";
+  const hlState = { block: false };
+  q.code.split("\n").forEach((line, i) => {
+    const row = document.createElement("span");
+    row.className = "ln";
+    const num = document.createElement("span");
+    num.className = "n";
+    num.textContent = i + 1;
+    row.appendChild(num);
+    const txt = document.createElement("span");
+    txt.innerHTML = highlightLine(line, hlState) || " "; // highlightLine escapes all text
+    row.appendChild(txt);
+    code.appendChild(row);
+  });
+
+  const box = $("choices");
+  box.innerHTML = "";
+  ERROR_TYPES.forEach(t => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "choice";
+    b.dataset.id = t.id;
+    b.innerHTML = "<b></b><small></small>";
+    b.firstChild.textContent = t.label;
+    b.addEventListener("click", () => pick(t.id));
+    box.appendChild(b);
+  });
+}
+
+let picked = null;
+function pick(id){
+  if (answered) return;
+  picked = id;
+  document.querySelectorAll(".choice").forEach(b => b.style.borderColor = b.dataset.id === id ? "var(--accent)" : "");
+  if (id === "compiler"){
+    $("lineBox").classList.remove("hidden");
+    $("lineInput").focus();
+  } else {
+    $("lineBox").classList.add("hidden");
+    answer(id);
+  }
+}
+function submitLine(){
+  const n = parseInt($("lineInput").value, 10);
+  if (!n || n < 1){ $("lineInput").focus(); return; }
+  answer("compiler", n);
+}
+
+function answer(choiceId, lineGuess){
+  if (answered) return;
+  answered = true;
+  const q = deck[idx];
+  const lines = [].concat(q.line || []);
+  const typeOk = choiceId === q.type;
+  const lineOk = q.type !== "compiler" || (typeOk && lines.includes(lineGuess));
+  const ok = typeOk && lineOk;
+  answers.push({ q, choice: choiceId, ok });
+  document.querySelectorAll(".choice").forEach(b => {
+    b.disabled = true;
+    b.style.borderColor = "";
+    if (b.dataset.id === q.type) b.classList.add("right");
+    else if (b.dataset.id === choiceId) b.classList.add("wrong");
+  });
+  $("lineInput").disabled = true;
+  $("lineSubmit").disabled = true;
+  if (q.type === "compiler"){
+    const row = $("code").children[lines[0] - 1];
+    if (row) row.classList.add("err");
+  }
+  const where = q.type === "compiler" ? " on line " + lines[0] : "";
+  let head;
+  if (ok) head = "Correct: " + typeById(q.type).label + where + ".";
+  else if (typeOk) head = "Right type, wrong line. The error is on line " + lines[0] + ".";
+  else if (q.type === "none") head = "Not quite. This code has no error.";
+  else head = "Not quite. This is a " + typeById(q.type).label.toLowerCase() + where + ".";
+  const fb = $("feedback");
+  fb.innerHTML = '<div class="feedback ' + (ok ? "ok" : "no") + '"><b></b><p></p></div>';
+  fb.querySelector("b").textContent = head;
+  fb.querySelector("p").textContent = q.explanation;
+  if (q.feedback){
+    const f = document.createElement("div");
+    f.className = "instructor";
+    f.innerHTML = "<b>Instructor feedback</b><p></p>";
+    f.querySelector("p").textContent = q.feedback;
+    fb.appendChild(f);
+  }
+  const next = $("nextBtn");
+  next.textContent = idx + 1 < deck.length ? "Next question" : "See results";
+  next.classList.remove("hidden");
+  next.focus();
+}
+
+function finish(){
+  const right = answers.filter(a => a.ok).length;
+  const total = answers.length;
+  $("scoreText").textContent = right + " / " + total + (total ? " (" + Math.round(right / total * 100) + "%)" : "");
+  const rows = {};
+  answers.forEach(a => {
+    const r = rows[a.q.lesson] = rows[a.q.lesson] || { ok: 0, n: 0 };
+    r.n++; if (a.ok) r.ok++;
+  });
+  const t = $("breakdown");
+  t.innerHTML = "<tr><th>Lesson</th><th>Correct</th></tr>";
+  Object.keys(rows).sort(byLesson).forEach(n => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = "<td></td><td></td>";
+    tr.children[0].textContent = n + ". " + LESSONS[n];
+    tr.children[1].textContent = rows[n].ok + " / " + rows[n].n;
+    t.appendChild(tr);
+  });
+  const missed = answers.some(a => !a.ok);
+  $("retryMissed").classList.toggle("hidden", !missed);
+  show("results");
+}
+
+$("startBtn").addEventListener("click", () => {
+  const sel = selectedLessons();
+  startQuiz(QUESTIONS.filter(s => sel.includes(s.lesson)));
+});
+$("nextBtn").addEventListener("click", () => {
+  if (idx + 1 < deck.length){ idx++; renderQuestion(); } else finish();
+});
+$("quitBtn").addEventListener("click", () => { answers.length ? finish() : show("setup"); });
+$("againBtn").addEventListener("click", () => show("setup"));
+$("retryMissed").addEventListener("click", () => startQuiz(answers.filter(a => !a.ok).map(a => a.q)));
+$("allBtn").addEventListener("click", () => {
+  document.querySelectorAll("#lessonList input:not(:disabled)").forEach(i => i.checked = true); updateCount();
+});
+$("noneBtn").addEventListener("click", () => {
+  document.querySelectorAll("#lessonList input").forEach(i => i.checked = false); updateCount();
+});
+$("lineSubmit").addEventListener("click", submitLine);
+$("lineInput").addEventListener("keydown", e => { if (e.key === "Enter") submitLine(); });
+// Keyboard: 1-4 picks an answer (ignored while typing a line number)
+document.addEventListener("keydown", e => {
+  if ($("quiz").classList.contains("hidden") || e.target.tagName === "INPUT") return;
+  const n = Number(e.key);
+  if (!answered && n >= 1 && n <= ERROR_TYPES.length) pick(ERROR_TYPES[n - 1].id);
+});
+
+Promise.all(LESSON_FILES.map(loadScript)).then(failed => {
+  failed = failed.filter(Boolean);
+  QUESTIONS.sort((a, b) => byLesson(a.lesson, b.lesson)); // files load in parallel, so restore lesson order
+  if (failed.length){
+    const note = document.createElement("p");
+    note.className = "meta";
+    note.textContent = "Could not load: " + failed.join(", ") + ". Check the file names in LESSON_FILES.";
+    $("setup").insertBefore(note, $("lessonList"));
+  }
+  buildLessonList();
+});
+</script>
+</body>
+</html>
