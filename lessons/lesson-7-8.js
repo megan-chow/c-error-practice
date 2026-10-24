@@ -655,7 +655,7 @@ int main(void) {
     },
 
     {
-      type: "compiler", line: 8,
+      type: "none",
       feedback: "&x got the address of x\n*&x will dereference &x (the address of x), which is x (value: 10)",
       code: String.raw`#include <stdio.h>
 
