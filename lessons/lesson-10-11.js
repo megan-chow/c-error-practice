@@ -10,14 +10,14 @@
 // Extracted from the Lesson 10 & 11 in-lab quiz PDFs (duplicates removed).
 
 registerLesson({
-  number: "10-11",
-  title: "Strings",
-  questions: [
-    // ---------- <ctype.h> ----------
-    {
-      type: "logic",
-      feedback: "should use isxdigit() function to check",
-      code: String.raw`#include <stdio.h>
+    number: "10-11",
+    title: "Strings",
+    questions: [
+        // ---------- <ctype.h> ----------
+        {
+            type: "logic",
+            feedback: "should use isxdigit() function to check",
+            code: String.raw`#include <stdio.h>
 #include <ctype.h>
 
 /* Expect to check F is a hexadecimal digit */
@@ -30,11 +30,11 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "none",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "none",
+            code: String.raw`#include <stdio.h>
 #include <ctype.h>
 
 /* Expect to check F is a hexadecimal digit */
@@ -47,12 +47,12 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "logic",
-      feedback: "no output\nIssue: Character-testing functions return zero for false and a nonzero value for true; the true value is not guaranteed to be exactly 1.",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "logic",
+            feedback: "no output\nIssue: Character-testing functions return zero for false and a nonzero value for true; the true value is not guaranteed to be exactly 1.",
+            code: String.raw`#include <stdio.h>
 #include <ctype.h>
 
 /* Expect to print lowercase */
@@ -65,12 +65,12 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "compiler", line: 7,
-      feedback: "correct function name is toupper().\nThe compiler see no such function, toUpper(), compile failed\nC is case-sensitive, very important!",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "compiler", line: 7,
+            feedback: "correct function name is toupper().\nThe compiler see no such function, toUpper(), compile failed\nC is case-sensitive, very important!",
+            code: String.raw`#include <stdio.h>
 #include <ctype.h>
 
 /* Expect to convert b to uppercase and print B */
@@ -82,11 +82,11 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "none",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "none",
+            code: String.raw`#include <stdio.h>
 #include <ctype.h>
 
 /* Expect to convert G to lowercase and print g */
@@ -99,12 +99,12 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "compiler", line: 7,
-      feedback: "The required header is missing, should have:\n#include <ctype.h>",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "compiler", line: 7,
+            feedback: "The required header is missing, should have:\n#include <ctype.h>",
+            code: String.raw`#include <stdio.h>
 
 /* Expect to print digit*/
 int main(void) {
@@ -116,12 +116,12 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "compiler", line: 6,
-      feedback: "required header file is not included\nFix:\n#include <ctype.h>",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "compiler", line: 6,
+            feedback: "required header file is not included\nFix:\n#include <ctype.h>",
+            code: String.raw`#include <stdio.h>
 #include <stdlib.h>
 
 /* Expect to convert G to lowercase and print g */
@@ -132,13 +132,84 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    // ---------- string-to-number conversion ----------
-    {
-      type: "logic",
-      feedback: "Output: 12.00\nLogic error: atoi() converts a string to an int.",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "logic",
+            feedback: "No output\nshould use isupper() function",
+            code: String.raw`#include <stdio.h>
+#include <ctype.h>
+
+/* Expect to print uppercase */
+int main(void) {
+    char ch = 'Q';
+
+    if (islower(ch)) {
+        printf("uppercase\n");
+    }
+
+    return 0;
+}`
+        },
+
+        {
+            type: "none",
+            feedback: "Output: digit",
+            code: String.raw`#include <stdio.h>
+#include <ctype.h>
+
+/* Expect to print digit*/
+int main(void) {
+    char ch = '7';
+
+    if (isdigit(ch)) {
+        printf("digit\n");
+    }
+
+    return 0;
+}`
+        },
+
+        {
+            type: "compiler", line: 8,
+            feedback: "compile error on Line 8:\ncorrect function name is toupper()\nFix:\nch = toupper(ch);",
+            code: String.raw`#include <stdio.h>
+#include <ctype.h>
+
+/* Expect to convert b to uppercase and print B */
+int main(void) {
+    char ch = 'b';
+
+    ch = upper(ch);
+
+    printf("%c\n", ch);
+
+    return 0;
+}`
+        },
+
+        {
+            type: "compiler", line: 7,
+            feedback: "required header file is not included\nFix:\n#include <ctype.h>",
+            code: String.raw`#include <stdio.h>
+
+/* Expect to convert G to lowercase and print g */
+int main(void) {
+    char ch = 'G';
+
+    ch = tolower(ch);
+
+    printf("%c\n", ch);
+
+    return 0;
+}`
+        },
+
+        // ---------- string-to-number conversion ----------
+        {
+            type: "logic",
+            feedback: "Output: 12.00\nLogic error: atoi() converts a string to an int.",
+            code: String.raw`#include <stdio.h>
 #include <stdlib.h>
 
 /* Expect to convert "12.75" to
@@ -153,12 +224,12 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "runtime",
-      feedback: "Run-time error (undefined behaviour)\nIssue: %f in sscanf() expects a float *; y is a double, so %lf is required.\nFix: sscanf(text, \"%d %lf\", &x, &y);",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "runtime",
+            feedback: "Run-time error (undefined behaviour)\nIssue: %f in sscanf() expects a float *; y is a double, so %lf is required.\nFix: sscanf(text, \"%d %lf\", &x, &y);",
+            code: String.raw`#include <stdio.h>
 
 /* Expect to read both values
      from the string, then print them*/
@@ -173,13 +244,13 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    // ---------- character / line I/O ----------
-    {
-      type: "compiler", line: 8,
-      feedback: "Compile error on Line 8, due to wrong order for arguments\nFix:\nfgets(sentence, 80, stdin);",
-      code: String.raw`#include <stdio.h>
+        // ---------- character / line I/O ----------
+        {
+            type: "compiler", line: 8,
+            feedback: "Compile error on Line 8, due to wrong order for arguments\nFix:\nfgets(sentence, 80, stdin);",
+            code: String.raw`#include <stdio.h>
 
 /* Expect to read a line of text.*/
 int main(void) {
@@ -192,12 +263,12 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "compiler", line: 6,
-      feedback: "compile error on Line 6, due to missing one required argument\nthe 2nd argument should be an integer\nFix:\nfgets(sentence, 80, stdin);",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "compiler", line: 6,
+            feedback: "compile error on Line 6, due to missing one required argument\nthe 2nd argument should be an integer\nFix:\nfgets(sentence, 80, stdin);",
+            code: String.raw`#include <stdio.h>
 
 /* Expect to read a line of text.*/
 int main(void) {
@@ -208,12 +279,12 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "compiler", line: 7,
-      feedback: "compile error on Line 7: wrong argument type\nputchar() expects one character (ascii code), not a string.\nFix:\nputs(message);",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "compiler", line: 7,
+            feedback: "compile error on Line 7: wrong argument type\nputchar() expects one character (ascii code), not a string.\nFix:\nputs(message);",
+            code: String.raw`#include <stdio.h>
 
 /* Expect to print Hello*/
 int main(void) {
@@ -223,12 +294,12 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "runtime",
-      feedback: "Run-time error (undefined behaviour):\n%c expects an int representing a character, but message provides a pointer to the first element.",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "runtime",
+            feedback: "Run-time error (undefined behaviour):\n%c expects an int representing a character, but message provides a pointer to the first element.",
+            code: String.raw`#include <stdio.h>
 
 /* Expect to print Hello */
 int main(void) {
@@ -238,13 +309,13 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    // ---------- <string.h> ----------
-    {
-      type: "compiler", line: 9,
-      feedback: "Missing required header file\nFix:\n#include <string.h>",
-      code: String.raw`#include <stdio.h>
+        // ---------- <string.h> ----------
+        {
+            type: "compiler", line: 9,
+            feedback: "Missing required header file\nFix:\n#include <string.h>",
+            code: String.raw`#include <stdio.h>
 
 /* Expect to copy "Hello"
      into destination and print it.*/
@@ -258,12 +329,12 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "compiler", line: 10,
-      feedback: "Wrong function name\nFix:\nstrcpy(destination, source);",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "compiler", line: 10,
+            feedback: "Wrong function name\nFix:\nstrcpy(destination, source);",
+            code: String.raw`#include <stdio.h>
 #include <string.h>
 
 /* Expect to copy "Hello"
@@ -278,12 +349,12 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "logic",
-      feedback: "Output: Hello\nFix:\nstrcat(text, word);",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "logic",
+            feedback: "Output: Hello\nFix:\nstrcat(text, word);",
+            code: String.raw`#include <stdio.h>
 #include <string.h>
 
 /* Expect to produce "Hello World" then print it*/
@@ -297,12 +368,12 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "runtime",
-      feedback: "run-time error (undefined behaviour)\nIssue: text does not have enough space for the concatenated string.",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "runtime",
+            feedback: "run-time error (undefined behaviour)\nIssue: text does not have enough space for the concatenated string.",
+            code: String.raw`#include <stdio.h>
 #include <string.h>
 
 /* Expect to produce "Hello World" then print it*/
@@ -316,12 +387,12 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "none",
-      feedback: "Output: same",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "none",
+            feedback: "Output: same",
+            code: String.raw`#include <stdio.h>
 #include <string.h>
 
 /* Expect to print same*/
@@ -335,12 +406,12 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "logic",
-      feedback: "No output\n\"ABC\" comes first, so strcmp() returns a negative value\nFix:\nif (strcmp(s1, s2) < 0)",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "logic",
+            feedback: "No output\n\"ABC\" comes first, so strcmp() returns a negative value\nFix:\nif (strcmp(s1, s2) < 0)",
+            code: String.raw`#include <stdio.h>
 #include <string.h>
 
 /* Expect to compare "ABC" and "ABD"
@@ -355,12 +426,12 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "none",
-      feedback: "Output: first 3 characters match\n(as expected)",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "none",
+            feedback: "Output: first 3 characters match\n(as expected)",
+            code: String.raw`#include <stdio.h>
 #include <string.h>
 
 /* Expect to compare only the first three characters.*/
@@ -374,12 +445,12 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "runtime",
-      feedback: "run-time error (undefined behaviour)\nstrncpy() does not add a null terminator when the requested number of characters is less than the source string length.\nFix: (to add)\ndestination[4] = '\\0';",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "runtime",
+            feedback: "run-time error (undefined behaviour)\nstrncpy() does not add a null terminator when the requested number of characters is less than the source string length.\nFix: (to add)\ndestination[4] = '\\0';",
+            code: String.raw`#include <stdio.h>
 #include <string.h>
 
 /* Expect to copy the first 4 characters
@@ -394,12 +465,12 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "logic",
-      feedback: "Expected to print \"found\", but no output\nwrong order of the arguments for strstr() function\nSince each of \"gram\" and text is passing in a memory address, compiler won't be able to detect the issue. ==> No compile error\nFix:\nif (strstr(text, \"gram\") != NULL)",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "logic",
+            feedback: "Expected to print \"found\", but no output\nwrong order of the arguments for strstr() function\nSince each of \"gram\" and text is passing in a memory address, compiler won't be able to detect the issue. ==> No compile error\nFix:\nif (strstr(text, \"gram\") != NULL)",
+            code: String.raw`#include <stdio.h>
 #include <string.h>
 
 /* Expect to search for "gram" inside "programming"*/
@@ -412,12 +483,12 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "none",
-      feedback: "Output: found\n(as expected)",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "none",
+            feedback: "Output: found\n(as expected)",
+            code: String.raw`#include <stdio.h>
 #include <string.h>
 
 /* Expect to search for "gram" inside "programming"*/
@@ -430,12 +501,12 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "logic",
-      feedback: "logic error (infinite loop which keeps printing C)\nEach subsequent call should use NULL as the first argument.\nFix:\ntoken = strtok(NULL, \" \");",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "logic",
+            feedback: "logic error (infinite loop which keeps printing C)\nEach subsequent call should use NULL as the first argument.\nFix:\ntoken = strtok(NULL, \" \");",
+            code: String.raw`#include <stdio.h>
 #include <string.h>
 
 /* Expect to print each word separately*/
@@ -451,13 +522,128 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    // ---------- character arrays as strings ----------
-    {
-      type: "logic",
-      feedback: "Output: 9",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "runtime",
+            feedback: "run-time error (undefined behaviour)\nIssue: destination is too small to hold \"Hello\" and its terminating '\\0'.",
+            code: String.raw`#include <stdio.h>
+#include <string.h>
+
+/* Expect to copy "Hello"
+     into destination and print it.*/
+int main(void) {
+    char source[] = "Hello";
+    char destination[4];
+
+    strcpy(destination, source);
+
+    printf("%s\n", destination);
+
+    return 0;
+}`
+        },
+
+        {
+            type: "runtime",
+            feedback: "run-time error (undefined behaviour)\nIssue: The source and destination arguments are reversed. destination does not initially contain a valid string.",
+            code: String.raw`#include <stdio.h>
+#include <string.h>
+
+/* Expect to copy "Hello"
+     into destination and print it.*/
+int main(void) {
+    char source[] = "Hello";
+    char destination[20];
+
+    strcpy(source, destination);
+
+    printf("%s\n", destination);
+
+    return 0;
+}`
+        },
+
+        {
+            type: "runtime",
+            feedback: "Run-time error (undefined behaviour)\nIssue: text does not initially contain a valid null-terminated string.\nFix:\nchar text[20] = \"\";",
+            code: String.raw`#include <stdio.h>
+#include <string.h>
+
+/* Expect to append "BCIT" to
+     an empty string, then print it*/
+int main(void) {
+    char text[20];
+    char word[] = "BCIT";
+
+    strcat(text, word);
+
+    printf("%s\n", text);
+
+    return 0;
+}`
+        },
+
+        {
+            type: "compiler", line: 9,
+            feedback: "Compile error on Line 9, due to missing required header file\nFix:\n#include <string.h>",
+            code: String.raw`#include <stdio.h>
+#include <stdlib.h>
+
+/* Expect to print same*/
+int main(void) {
+    char s1[] = "Hello";
+    char s2[] = "Hello";
+
+    if (strcmp(s1, s2) == 0) {
+        printf("same\n");
+    }
+
+    return 0;
+}`
+        },
+
+        {
+            type: "logic",
+            feedback: "no output\ns1 == s2 is to checking addresses, will be always different, never go into if-block to print\nFix:\nif (strcmp(s1, s2) == 0)",
+            code: String.raw`#include <stdio.h>
+#include <string.h>
+
+/* Expect to print same*/
+int main(void) {
+    char s1[] = "Hello";
+    char s2[] = "Hello";
+
+    if (s1 == s2) {
+        printf("same\n");
+    }
+
+    return 0;
+}`
+        },
+
+        {
+            type: "none",
+            feedback: "Output: anada",
+            code: String.raw`#include <stdio.h>
+#include <string.h>
+
+/* Expect to print from the first 'a' onward*/
+int main(void) {
+    char text[] = "Canada";
+    char *ptr = strchr(text, 'a');
+
+    printf("%s\n", ptr);
+
+    return 0;
+}`
+        },
+
+        // ---------- character arrays as strings ----------
+        {
+            type: "logic",
+            feedback: "Output: 9",
+            code: String.raw`#include <stdio.h>
 
 /* Expect to print 5*/
 int main(void) {
@@ -468,12 +654,12 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "compiler", line: 8,
-      feedback: "compile error:\nmessage is a memory address\nmessage[0] is a char ('H')\ncannot do a division",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "compiler", line: 8,
+            feedback: "compile error:\nmessage is a memory address\nmessage[0] is a char ('H')\ncannot do a division",
+            code: String.raw`#include <stdio.h>
 
 /* Expect to print 5*/
 int main(void) {
@@ -484,12 +670,12 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "logic",
-      feedback: "Output: l\nword[3] is the forth character",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "logic",
+            feedback: "Output: l\nword[3] is the forth character",
+            code: String.raw`#include <stdio.h>
 
 /* Expect to print the third character of the string*/
 int main(void) {
@@ -499,12 +685,12 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "runtime",
-      feedback: "run-time error (undefined behaviour) since missing '\\0' in the array",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "runtime",
+            feedback: "run-time error (undefined behaviour) since missing '\\0' in the array",
+            code: String.raw`#include <stdio.h>
 
 int main(void) {
     char word[] = {'H', 'e', 'l', 'l', 'o'};
@@ -513,12 +699,12 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "runtime",
-      feedback: "run-time error (undefined behaviour) since missing '\\0' in the array",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "runtime",
+            feedback: "run-time error (undefined behaviour) since missing '\\0' in the array",
+            code: String.raw`#include <stdio.h>
 
 int main(void) {
     char school[4] = "BCIT";
@@ -527,11 +713,11 @@ int main(void) {
 
     return 0;
 }`
-    },
+        },
 
-    {
-      type: "none",
-      code: String.raw`#include <stdio.h>
+        {
+            type: "none",
+            code: String.raw`#include <stdio.h>
 
 /* Expect to store an empty C string */
 int main(void) {
@@ -543,7 +729,36 @@ int main(void) {
 
     return 0;
 }`
-    }
+        },
 
-  ]
+        {
+            type: "none",
+            feedback: "Output: ABC\nhow many bytes in the array? 4\nhow many chars in the string? 3",
+            code: String.raw`#include <stdio.h>
+
+int main(void) {
+    char text[] = {'A', 'B', 'C', '\0'};
+
+    printf("%s\n", text);
+
+    return 0;
+}`
+        },
+
+        {
+            type: "none",
+            feedback: "\"\\0\" is equivalent to \"\" (empty string)",
+            code: String.raw`#include <stdio.h>
+
+/* Expect to store an empty C string */
+int main(void) {
+    char text[10] = "\0";
+
+    printf("%s\n", text);
+
+    return 0;
+}`
+        }
+
+    ]
 });
