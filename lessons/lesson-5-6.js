@@ -1,4 +1,4 @@
-// Lesson 5 & 6: Arrays & Strings
+// Lesson 5 & 6: Arrays
 //
 // Each question needs:
 //   type:        "compiler" | "runtime" | "logic" | "none"
@@ -11,7 +11,7 @@
 
 registerLesson({
   number: "5-6",
-  title: "Arrays & Strings",
+  title: "Arrays",
   questions: [
     {
       type: "compiler", line: 7,
